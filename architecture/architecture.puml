@@ -1,0 +1,37 @@
+@startuml Arquitetura do Sistema
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v16.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/ApplicationIntegration/APIGateway.puml
+!include AWSPuml/ApplicationIntegration/SimpleNotificationService.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/Database/DynamoDB.puml
+
+skinparam componentStyle uml2
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam roundcorner 20
+skinparam component {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+title Arquitetura do Sistema - Desafio Toro
+
+APIGateway(api, "API Gateway", "Endpoint REST")
+SimpleNotificationService(sns1, "SNS", "process-question")
+SimpleNotificationService(sns2, "SNS", "notify-response")
+Lambda(lambda1, "Lambda", "process_question")
+Lambda(lambda2, "Lambda", "notify_user")
+DynamoDB(dynamo, "DynamoDB", "questions")
+
+
+api --> sns1 : POST /questions
+sns1 --> lambda1 : Trigger
+lambda1 --> dynamo : Read/Write
+lambda1 --> sns2 : Publish
+sns2 --> lambda2 : Trigger
+lambda2 --> dynamo : Read
+
+@enduml 

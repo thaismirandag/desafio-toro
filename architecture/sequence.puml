@@ -1,0 +1,60 @@
+@startuml Diagrama de Sequência do Sistema
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v16.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/ApplicationIntegration/APIGateway.puml
+!include AWSPuml/ApplicationIntegration/SimpleNotificationService.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/Database/DynamoDB.puml
+
+skinparam sequence {
+    ArrowColor Black
+    ActorBorderColor Black
+    LifeLineBorderColor Black
+    ParticipantBorderColor Black
+    ParticipantBackgroundColor White
+}
+
+title Diagrama de Sequência do Sistema - Desafio Toro
+
+actor Usuário AS Usuário
+participant "API Gateway" as API
+participant "SNS\nprocess-question" as SNS1
+participant "Lambda\nprocess_question" as L1
+participant "DynamoDB" as DB
+participant "SNS\nnotify-response" as SNS2
+participant "Lambda\nnotify_user" as L2
+
+Usuário -> API: POST /questions
+activate API
+
+API -> SNS1: Publish Message
+activate SNS1
+
+SNS1 -> L1: Trigger
+activate L1
+
+L1 -> DB: Save Question
+activate DB
+DB --> L1: Confirmation
+deactivate DB
+
+L1 -> SNS2: Publish Response
+activate SNS2
+deactivate L1
+
+SNS2 -> L2: Trigger
+activate L2
+
+L2 -> DB: Get Question & Response
+activate DB
+DB --> L2: Data
+deactivate DB
+
+L2 --> Usuário: Send Notification
+deactivate L2
+deactivate SNS2
+deactivate SNS1
+deactivate API
+
+@enduml 
