@@ -1,4 +1,4 @@
-@startuml Diagrama de Sequência do Sistema Backend
+@startuml Diagrama de Sequência do Backend
 
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v16.0/dist
 !include AWSPuml/AWSCommon.puml
@@ -15,7 +15,7 @@ skinparam sequence {
     ParticipantBackgroundColor White
 }
 
-title Diagrama de Sequência do Sistema Backend - Desafio Toro
+title Diagrama de Sequência do Backend 
 
 actor Usuário AS Usuário
 participant "API Gateway" as API
@@ -28,30 +28,30 @@ participant "Lambda\nnotify_user" as L2
 Usuário -> API: POST /questions
 activate API
 
-API -> SNS1: Publish Message
+API -> SNS1: Publicar Mensagem
 activate SNS1
 
 SNS1 -> L1: Trigger
 activate L1
 
-L1 -> DB: Save Question
+L1 -> DB: Salvar Pergunta
 activate DB
-DB --> L1: Confirmation
+DB --> L1: Confirmação
 deactivate DB
 
-L1 -> SNS2: Publish Response
+L1 -> SNS2: Publicar Resposta
 activate SNS2
 deactivate L1
 
 SNS2 -> L2: Trigger
 activate L2
 
-L2 -> DB: Get Question & Response
+L2 -> DB: Obter Pergunta e Resposta
 activate DB
-DB --> L2: Data
+DB --> L2: Dados
 deactivate DB
 
-L2 --> Usuário: Send Notification
+L2 --> Usuário: Usuário notificado
 deactivate L2
 deactivate SNS2
 deactivate SNS1
