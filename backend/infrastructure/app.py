@@ -15,7 +15,7 @@ class DesafioToroStack(Stack):
             table_name="questions",
             partition_key=Attribute(name="id", type=AttributeType.STRING),
             billing_mode=BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.DESTROY  # Para ambiente de desenvolvimento
+            removal_policy=RemovalPolicy.DESTROY  
         )
 
         process_question_topic = Topic(
@@ -85,7 +85,7 @@ class DesafioToroStack(Stack):
         api = RestApi(
             self, "DesafioToroApi",
             rest_api_name="Desafio Toro API",
-            description="API para o Desafio Toro"
+            description=" "
         )
 
         questions = api.root.add_resource("questions")

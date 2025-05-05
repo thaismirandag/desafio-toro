@@ -40,10 +40,6 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings():
-    """
-    This function will cache the settings object to avoid reading the configuration file multiple times.
-    https://fastapi.tiangolo.com/advanced/settings/#creating-the-settings-only-once-with-lru_cache
-    """
     return Settings()
 
 
