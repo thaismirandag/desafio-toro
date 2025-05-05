@@ -1,4 +1,4 @@
-@startuml Diagrama de Sequência do Sistema
+@startuml Diagrama de Sequência do Sistema Backend
 
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v16.0/dist
 !include AWSPuml/AWSCommon.puml
@@ -15,7 +15,7 @@ skinparam sequence {
     ParticipantBackgroundColor White
 }
 
-title Diagrama de Sequência do Sistema - Desafio Toro
+title Diagrama de Sequência do Sistema Backend - Desafio Toro
 
 actor Usuário AS Usuário
 participant "API Gateway" as API

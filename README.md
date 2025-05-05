@@ -32,11 +32,12 @@ poetry install
 ```bash
 cp .env.example .env
 # Edite o arquivo .env com suas configurações
+
 ```
 
 3. Inicie o servidor:
 ```bash
-poetry run start
+poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 ## Frontend
@@ -65,17 +66,6 @@ cp src/environments/environment.example.ts src/environments/environment.ts
 ng serve
 ```
 
-## Configuração AWS
-
-1. Configure o AWS Cognito:
-   - Crie um User Pool
-   - Configure o App Client
-   - Atualize as variáveis de ambiente com os IDs
-
-2. Configure o AWS DynamoDB:
-   - Crie a tabela para armazenar as perguntas
-   - Configure as permissões IAM
-
 ## Desenvolvimento
 
 ### Backend
@@ -90,6 +80,3 @@ ng serve
 - Testes: `ng test`
 - Build: `ng build`
 
-## Licença
-
-MIT 

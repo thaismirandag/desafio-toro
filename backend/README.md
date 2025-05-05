@@ -6,13 +6,25 @@ Este é o backend do Desafio Toro, construído com FastAPI e integrado com servi
 
 ```
 backend/
-├── app/
-│   ├── api/        # Endpoints da API
-│   ├── core/       # Configurações e utilitários
-│   ├── models/     # Modelos de dados
-│   ├── schemas/    # Schemas Pydantic
-│   └── services/   # Serviços e lógica de negócio
-└── tests/          # Testes automatizados
+    app/
+        models/
+            question.py  # Modelos relacionados a perguntas
+            user.py      # Modelos relacionados a usuários
+        services/
+            auth.py      # Serviço de autenticação
+            question.py  # Serviço de perguntas
+        api/
+            v1/
+                auth.py    # Rotas de autenticação
+                router.py  # Rotas de perguntas
+    lambdas/
+        notify_user.py  # Lambda de notificação
+        process_question.py  # Lambda de processamento de pergunta
+    infrastructure/
+        app.py  # configuração do cdk
+        cdk.json
+    tests/
+
 ```
 
 ## Desenvolvimento
@@ -20,7 +32,9 @@ backend/
 ### Pré-requisitos
 - Python 3.11
 - Poetry
-- Docker e Docker Compose (opcional)
+- Docker e Docker Compose 
+- AWS CLI
+- CDK
 
 ### Instalação
 

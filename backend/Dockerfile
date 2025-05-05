@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 RUN apt-get update && apt-get install -y \
     curl \
@@ -15,10 +15,10 @@ WORKDIR /app
 
 COPY pyproject.toml poetry.lock* ./
 
-RUN poetry install --no-interaction --no-ansi
+RUN poetry install --without dev --no-root
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"] 
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"] 

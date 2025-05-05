@@ -45,21 +45,3 @@ htmlcov/
 # Poetry
 poetry.lock
 
-# Node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Angular
-/frontend/dist/
-/frontend/tmp/
-/frontend/.angular/
-/frontend/.sass-cache/
-/frontend/connect.lock
-/frontend/coverage/
-/frontend/libpeerconnection.log
-/frontend/npm-debug.log
-/frontend/yarn-error.log
-/frontend/testem.log
-/frontend/typings/ 
