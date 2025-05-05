@@ -1,0 +1,51 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "ssm:GetParameter",
+          "ssm:PutParameter",
+          "ssm:DeleteParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+          "ssm:DescribeParameters"
+        ],
+        "Resource": "arn:aws:ssm:*:977099002762:parameter/cdk-bootstrap/*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:*"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cdk-*-bootstrap-*",
+          "arn:aws:s3:::cdk-*-bootstrap-*/*"
+        ]
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "cloudformation:*"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "iam:CreateRole",
+          "iam:PutRolePolicy",
+          "iam:AttachRolePolicy",
+          "iam:PassRole",
+          "iam:GetRole",
+          "iam:UpdateAssumeRolePolicy"
+        ],
+        "Resource": "arn:aws:iam::977099002762:role/cdk-*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::977099002762:role/cdk-*-deploy-role-*"
+      }
+    ]
+  }

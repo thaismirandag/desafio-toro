@@ -1,0 +1,34 @@
+{
+  "version": "41.0.0",
+  "files": {
+    "01211934c5f0c2ade989b2269479ef281649a7513b9c4892509ea6505f062ffc": {
+      "displayName": "ProcessQuestionFunction/Code",
+      "source": {
+        "path": "asset.01211934c5f0c2ade989b2269479ef281649a7513b9c4892509ea6505f062ffc",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "01211934c5f0c2ade989b2269479ef281649a7513b9c4892509ea6505f062ffc.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "a36d015a3c03d641a9fba7c8a5175e51e20a2116c9d5b6fd478563ef427084b5": {
+      "displayName": "DesafioToroStack Template",
+      "source": {
+        "path": "DesafioToroStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "a36d015a3c03d641a9fba7c8a5175e51e20a2116c9d5b6fd478563ef427084b5.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

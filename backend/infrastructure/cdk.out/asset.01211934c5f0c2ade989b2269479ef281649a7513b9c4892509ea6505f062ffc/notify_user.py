@@ -8,7 +8,7 @@ def lambda_notify_user(event, context):
     Lambda que notifica o usuário quando uma resposta está pronta.
     - Recebe a notificação do SNS
     - Recupera a pergunta e resposta do DynamoDB
-    - Envia a notificação (neste caso, apenas log)
+    - Envia a notificação (neste caso, apenas loga)
     """
     try:
         print("Recebendo evento do SNS...")

@@ -23,6 +23,8 @@ backend/
     infrastructure/
         app.py  # configuração do cdk
         cdk.json
+        requirements.txt
+        README.md
     tests/
 
 ```

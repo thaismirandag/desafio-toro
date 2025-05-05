@@ -1,0 +1,230 @@
+{
+  "version": "41.0.0",
+  "artifacts": {
+    "DesafioToroStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "DesafioToroStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "DesafioToroStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "DesafioToroStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a36d015a3c03d641a9fba7c8a5175e51e20a2116c9d5b6fd478563ef427084b5.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "DesafioToroStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "DesafioToroStack.assets"
+      ],
+      "metadata": {
+        "/DesafioToroStack/QuestionsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "QuestionsTable14A8B4AD"
+            }
+          }
+        ],
+        "/DesafioToroStack/QuestionsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuestionsTable14A8B4AD"
+          }
+        ],
+        "/DesafioToroStack/ProcessQuestionTopic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessQuestionTopicFA0E9364"
+          }
+        ],
+        "/DesafioToroStack/NotifyResponseTopic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotifyResponseTopic3C5D9E93"
+          }
+        ],
+        "/DesafioToroStack/LambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaRole3A44B857"
+          }
+        ],
+        "/DesafioToroStack/LambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaRoleDefaultPolicy75625A82"
+          }
+        ],
+        "/DesafioToroStack/ProcessQuestionFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessQuestionFunctionDAEF932C"
+          }
+        ],
+        "/DesafioToroStack/ProcessQuestionFunction/AllowInvoke:DesafioToroStackProcessQuestionTopicE5E19F4D": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessQuestionFunctionAllowInvokeDesafioToroStackProcessQuestionTopicE5E19F4D2F27E47F"
+          }
+        ],
+        "/DesafioToroStack/ProcessQuestionFunction/ProcessQuestionTopic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessQuestionFunctionProcessQuestionTopicA0BD4742"
+          }
+        ],
+        "/DesafioToroStack/NotifyUserFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotifyUserFunction24970A2B"
+          }
+        ],
+        "/DesafioToroStack/NotifyUserFunction/AllowInvoke:DesafioToroStackNotifyResponseTopic03D4F89E": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotifyUserFunctionAllowInvokeDesafioToroStackNotifyResponseTopic03D4F89E4C1B047A"
+          }
+        ],
+        "/DesafioToroStack/NotifyUserFunction/NotifyResponseTopic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotifyUserFunctionNotifyResponseTopicF885599A"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiE32CC593"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiCloudWatchRole99A19228"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiAccount42947F2A"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiDeployment52040525bbec043a0c2d3f9f688ede66792aedb6"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiDeploymentStageprodB2C0431E"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiEndpointF67BFE61"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiOPTIONSA1D2B516"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Default/questions/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiquestionsDE1122F6"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Default/questions/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiquestionsOPTIONSF5BC995B"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Default/questions/POST/ApiPermission.DesafioToroStackDesafioToroApiD5E61628.POST..questions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiquestionsPOSTApiPermissionDesafioToroStackDesafioToroApiD5E61628POSTquestionsA0580C28"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Default/questions/POST/ApiPermission.Test.DesafioToroStackDesafioToroApiD5E61628.POST..questions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiquestionsPOSTApiPermissionTestDesafioToroStackDesafioToroApiD5E61628POSTquestions0EAC0561"
+          }
+        ],
+        "/DesafioToroStack/DesafioToroApi/Default/questions/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DesafioToroApiquestionsPOST4D5D90DD"
+          }
+        ],
+        "/DesafioToroStack/ApiEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiEndpoint"
+          }
+        ],
+        "/DesafioToroStack/QuestionsTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuestionsTableName"
+          }
+        ],
+        "/DesafioToroStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/DesafioToroStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/DesafioToroStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/DesafioToroStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "DesafioToroStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  },
+  "minimumCliVersion": "2.1005.0"
+}
