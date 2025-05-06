@@ -45,3 +45,10 @@ htmlcov/
 # Poetry
 poetry.lock
 
+# CDK
+cdk.out/
+
+# Lambda
+backend/lambdas/python/
+backend/infrastructure/lambda_package/build/
+backend/infrastructure/cdk.out/

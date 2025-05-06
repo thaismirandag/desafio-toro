@@ -1,23 +1,10 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, EmailStr, UUID4
 
-class UserBase(BaseModel):
-    email: EmailStr
-    name: str = Field(..., min_length=1, max_length=100)
+class UserCreate(BaseModel):
+    name: str
 
-class UserCreate(UserBase):
-    pass
+class AuthResponse(BaseModel):
+    token: str
+    name: str
 
-class UserInDB(UserBase):
-    id: UUID4
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-class UserResponse(UserBase):
-    id: UUID4
-    created_at: datetime
-
-    class Config:
-        from_attributes = True

@@ -4,7 +4,7 @@ from typing import List
 import boto3
 from botocore.exceptions import ClientError
 from openai import OpenAI
-from app.models.question import QuestionCreate, QuestionResponse
+from app.models.question import QuestionResponse
 from app.core.config import settings
 from app.services.sns import SNSService
 import json
@@ -22,18 +22,18 @@ class QuestionService:
         self.sns = SNSService()
         self.openai_client = OpenAI(api_key=settings.OPENAI_API_KEY)
     
-    async def create_question(self, question: str, user_id: str) -> dict:
+    async def create_question(self, question: str, user_name: str) -> dict:
         question_id = str(uuid.uuid4())
         now = datetime.utcnow().isoformat()
         
         question_data = {
-            'id': str(question_id),
+            'id': question_id,
             'answer': None,
-            'question': str(question),
-            'user_id': str(user_id),
+            'question': question,
+            'user_id': user_name,  
             'status': 'pendente',
-            'created_at': str(now),
-            'updated_at': str(now)
+            'created_at': now,
+            'updated_at': now
         }
         
         print(f"Criando questão: {json.dumps(question_data, default=str)}")
@@ -46,29 +46,25 @@ class QuestionService:
         return question_data
     
     
-    async def list_questions(self, user_id: str) -> List[QuestionResponse]:
+    async def list_questions(self, user_name: str) -> List[QuestionResponse]:
         try:
-            user_id = str(user_id)
-            print(f"Listando questões para usuário: {user_id}")
+            print(f"Listando questões para usuário: {user_name}")
             
             response = self.table.scan(
                 FilterExpression='user_id = :user_id',
-                ExpressionAttributeValues={':user_id': user_id}
+                ExpressionAttributeValues={':user_id': user_name}
             )
             items = response.get('Items', [])
             print(f"Encontradas {len(items)} questões")
             for item in items:
                 print(f"Questão ID: {item['id']}, Status: {item['status']}")
             return [QuestionResponse(**item) for item in items]
-        except ValueError:
-            raise Exception("ID de usuário inválido")
         except ClientError as e:
             print(f"Erro detalhado: {str(e)}")
             raise Exception(f"Erro ao listar perguntas no DynamoDB: {str(e)}")
     
     async def answer_question(self, question_id: str, answer: str) -> QuestionResponse:
         try:
-            question_id = str(question_id)
             print(f"Buscando questão: {question_id}")
             
             response = self.table.get_item(Key={'id': question_id})
@@ -102,4 +98,4 @@ class QuestionService:
             return QuestionResponse(**item)
         except ClientError as e:
             print(f"Erro detalhado: {str(e)}")
-            raise Exception(f"Erro ao responder pergunta no DynamoDB: {str(e)}") 
+            raise Exception(f"Erro ao responder pergunta no DynamoDB: {str(e)}")

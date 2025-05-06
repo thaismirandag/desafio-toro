@@ -33,6 +33,17 @@ class DesafioToroStack(Stack):
             time_to_live_attribute="ttl"
         )
 
+        sessions_table = dynamodb.Table(
+            self, "SessionsTable",
+            table_name="sessions",
+            partition_key=dynamodb.Attribute(
+                name="session_id",
+                type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.DESTROY 
+        )
+
         # SNS Topics
         process_question_topic = sns.Topic(
             self, "ProcessQuestionTopic",
@@ -65,7 +76,7 @@ class DesafioToroStack(Stack):
                     "dynamodb:Query",
                     "dynamodb:Scan"
                 ],
-                resources=[questions_table.table_arn]
+                resources=[questions_table.table_arn, sessions_table.table_arn]
             )
         )
 
@@ -102,6 +113,7 @@ class DesafioToroStack(Stack):
             code=_lambda.Code.from_asset("../lambdas"),
             role=lambda_role,
             environment={
+                "SESSIONS_TABLE": sessions_table.table_name,
                 "QUESTIONS_TABLE": questions_table.table_name,
                 "NOTIFY_TOPIC": notify_response_topic.topic_arn
             },
@@ -117,6 +129,7 @@ class DesafioToroStack(Stack):
             code=_lambda.Code.from_asset("../lambdas"),
             role=lambda_role,
             environment={
+                "SESSIONS_TABLE": sessions_table.table_name,
                 "QUESTIONS_TABLE": questions_table.table_name
             },
             timeout=Duration.seconds(30),
@@ -124,22 +137,32 @@ class DesafioToroStack(Stack):
             architecture=_lambda.Architecture.ARM_64
         )
 
-        # API Gateway
-        api = apigateway.RestApi(
-            self, "DesafioToroApi",
-            rest_api_name="Desafio Toro API",
-            description="API para o Desafio Toro",
-            default_cors_preflight_options=apigateway.CorsOptions(
-                allow_origins=apigateway.Cors.ALL_ORIGINS,
-                allow_methods=apigateway.Cors.ALL_METHODS,
-                allow_headers=apigateway.Cors.DEFAULT_HEADERS
-            )
+        fastapi_lambda = _lambda.Function(
+            self, "FastApi",
+            runtime=_lambda.Runtime.PYTHON_3_11,
+            handler="lambda_handler.handler",
+            code=_lambda.Code.from_asset("lambda_package.zip"),
+            role=lambda_role,
+            timeout=Duration.seconds(30),
+            memory_size=512,
+            environment={
+                "SESSIONS_TABLE": sessions_table.table_name,
+                "QUESTIONS_TABLE": questions_table.table_name,
+                "AWS_ACCOUNT_ID": "977099002762",
+                "OPENAI_API_KEY": "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",
+            }
         )
 
-        questions = api.root.add_resource("questions")
-        questions.add_method(
-            "POST",
-            LambdaIntegration(process_question_lambda)
+        # API Gateway
+        api = apigateway.LambdaRestApi(
+            self, "FastApiEndpoint",
+            handler=fastapi_lambda,
+            proxy=True,
+            rest_api_name="DesafioToroFastAPI",
+            default_cors_preflight_options=apigateway.CorsOptions(
+                allow_origins=apigateway.Cors.ALL_ORIGINS,
+                allow_methods=apigateway.Cors.ALL_METHODS
+            ),
         )
 
         process_question_topic.add_subscription(

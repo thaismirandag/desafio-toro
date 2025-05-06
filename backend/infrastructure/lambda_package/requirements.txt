@@ -1,0 +1,11 @@
+fastapi
+mangum
+openai
+boto3
+pydantic
+python-dotenv
+python-jose
+python-multipart
+httpx
+email-validator
+pydantic-settings
