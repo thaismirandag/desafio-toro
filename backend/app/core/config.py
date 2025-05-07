@@ -1,7 +1,6 @@
-from typing import List, Optional
-from pydantic_settings import BaseSettings
-from pydantic import AnyHttpUrl
 from functools import lru_cache
+from typing import List
+from pydantic import AnyHttpUrl, BaseSettings
 
 
 class Settings(BaseSettings):
@@ -18,7 +17,8 @@ class Settings(BaseSettings):
     AWS_REGION: str
     AWS_DEFAULT_REGION: str
     AWS_ACCOUNT_ID: str
-    DYNAMODB_TABLE: str = "questions"
+    DYNAMODB_TABLE_QUESTIONS: str = "questions"
+    DYNAMODB_TABLE_SESSIONS: str = "sessions"
     SNS_TOPIC_PROCESS_NAME: str = "process-question"
     SNS_TOPIC_NOTIFY_NAME: str = "notify-response"
 
@@ -29,17 +29,22 @@ class Settings(BaseSettings):
     BACKEND_HOST: str = "0.0.0.0"
     BACKEND_PORT: str = "8000"
 
-  
     class Config:
-        env_file = ".env"  
+        env_file = ".env"
 
     @property
     def sns_topic_process(self) -> str:
-        return f"arn:aws:sns:{self.AWS_REGION}:{self.AWS_ACCOUNT_ID}:{self.SNS_TOPIC_PROCESS_NAME}"
+        return (
+            f"arn:aws:sns:{self.AWS_REGION}:"
+            f"{self.AWS_ACCOUNT_ID}:{self.SNS_TOPIC_PROCESS_NAME}"
+        )
 
     @property
     def sns_topic_notify(self) -> str:
-        return f"arn:aws:sns:{self.AWS_REGION}:{self.AWS_ACCOUNT_ID}:{self.SNS_TOPIC_NOTIFY_NAME}"
+        return (
+            f"arn:aws:sns:{self.AWS_REGION}:"
+            f"{self.AWS_ACCOUNT_ID}:{self.SNS_TOPIC_NOTIFY_NAME}"
+        )
 
 
 @lru_cache

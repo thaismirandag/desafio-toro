@@ -1,15 +1,21 @@
 # Desafio Toro
 
-Projeto fullstack com backend em FastAPI e frontend em Angular.
+Projeto fullstack com backend em FastAPI e frontend em javascript.
 
 ## Estrutura do Projeto
 
 ```
 .
-├── backend/           # API FastAPI
+├── architecture  
+│   ├── architecture.puml  #Diagrama de arquitetura
+│   └── sequence.puml     #Diagrama de sequência
+├── backend/          # API FastAPI
 │   ├── app/          # Código fonte
 │   └── tests/        # Testes
-└── frontend/         # Aplicação Angular
+│   └── infrastructure/ # Infraestrutura
+│   └── lambda_package/ # Pacote para Lambda
+└── frontend/         # frontend ainda não implementado
+
 ```
 
 ## Backend
@@ -42,29 +48,6 @@ poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 ## Frontend
 
-### Pré-requisitos
-
-- Node.js 18+
-- npm ou yarn
-
-### Instalação
-
-1. Instale as dependências:
-```bash
-cd frontend
-npm install
-```
-
-2. Configure as variáveis de ambiente:
-```bash
-cp src/environments/environment.example.ts src/environments/environment.ts
-# Edite o arquivo com suas configurações
-```
-
-3. Inicie o servidor de desenvolvimento:
-```bash
-ng serve
-```
 
 ## Desenvolvimento
 
@@ -74,9 +57,5 @@ ng serve
 - Formatação: `poetry run black .`
 - Testes: `poetry run pytest`
 
-### Frontend
 
-- Lint: `ng lint`
-- Testes: `ng test`
-- Build: `ng build`
 

@@ -19,42 +19,88 @@ title Diagrama de Sequência do Backend
 
 actor Usuário AS Usuário
 participant "API Gateway" as API
+participant "Lambda\nFastAPI" as FastAPI
+participant "DynamoDB\nSessions" as Sessions
+participant "DynamoDB\nQuestions" as Questions
 participant "SNS\nprocess-question" as SNS1
 participant "Lambda\nprocess_question" as L1
-participant "DynamoDB" as DB
 participant "SNS\nnotify-response" as SNS2
 participant "Lambda\nnotify_user" as L2
+
+== Fluxo de Criação de Pergunta ==
 
 Usuário -> API: POST /questions
 activate API
 
-API -> SNS1: Publicar Mensagem
+API -> FastAPI: HTTP Request
+activate FastAPI
+
+FastAPI -> Sessions: Verificar Sessão
+activate Sessions
+Sessions --> FastAPI: Sessão Válida
+deactivate Sessions
+
+FastAPI -> Questions: Salvar Pergunta (status: pendente)
+activate Questions
+Questions --> FastAPI: Confirmação
+deactivate Questions
+
+FastAPI -> SNS1: Publicar Mensagem
 activate SNS1
+deactivate FastAPI
+
+== Fluxo de Processamento ==
 
 SNS1 -> L1: Trigger
 activate L1
 
-L1 -> DB: Salvar Pergunta
-activate DB
-DB --> L1: Confirmação
-deactivate DB
+L1 -> Questions: Obter Pergunta
+activate Questions
+Questions --> L1: Dados da Pergunta
+deactivate Questions
 
-L1 -> SNS2: Publicar Resposta
+L1 -> Questions: Atualizar Resposta
+activate Questions
+Questions --> L1: Confirmação
+deactivate Questions
+
+L1 -> SNS2: Publicar Notificação
 activate SNS2
 deactivate L1
+
+== Fluxo de Notificação ==
 
 SNS2 -> L2: Trigger
 activate L2
 
-L2 -> DB: Obter Pergunta e Resposta
-activate DB
-DB --> L2: Dados
-deactivate DB
+L2 -> Questions: Obter Pergunta e Resposta
+activate Questions
+Questions --> L2: Dados
+deactivate Questions
 
-L2 --> Usuário: Usuário notificado
+L2 --> Usuário: Notificação de Resposta Disponível
 deactivate L2
 deactivate SNS2
 deactivate SNS1
+deactivate API
+
+== Fluxo de Consulta de Perguntas ==
+
+Usuário -> API: GET /questions/{session_id}
+activate API
+
+API -> FastAPI: HTTP Request
+activate FastAPI
+
+FastAPI -> Questions: Consultar Perguntas
+activate Questions
+Questions --> FastAPI: Lista de Perguntas
+deactivate Questions
+
+FastAPI --> API: Resposta HTTP
+deactivate FastAPI
+
+API --> Usuário: Lista de Perguntas
 deactivate API
 
 @enduml 

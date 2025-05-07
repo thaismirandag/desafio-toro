@@ -19,19 +19,25 @@ skinparam component {
 
 title Arquitetura do Sistema - Desafio Toro
 
+' Componentes
 APIGateway(api, "API Gateway", "Endpoint REST")
 SimpleNotificationService(sns1, "SNS", "process-question")
 SimpleNotificationService(sns2, "SNS", "notify-response")
+Lambda(fastapi, "Lambda", "FastAPI")
 Lambda(lambda1, "Lambda", "process_question")
 Lambda(lambda2, "Lambda", "notify_user")
 DynamoDB(dynamo, "DynamoDB", "questions")
+DynamoDB(sessions, "DynamoDB", "sessions")
 
-
-api --> sns1 : POST /questions
-sns1 --> lambda1 : Trigger
-lambda1 --> dynamo : Read/Write
-lambda1 --> sns2 : Publish
-sns2 --> lambda2 : Trigger
-lambda2 --> dynamo : Read
+' Conexões
+api -down-> fastapi : "HTTP Requests"
+fastapi -right-> dynamo : "Read/Write"
+fastapi -right-> sessions : "Read/Write"
+fastapi -down-> sns1 : "Publish"
+sns1 -down-> lambda1 : "Trigger"
+lambda1 -right-> dynamo : "Read/Write"
+lambda1 -down-> sns2 : "Publish"
+sns2 -down-> lambda2 : "Trigger"
+lambda2 -right-> dynamo : "Read"
 
 @enduml 

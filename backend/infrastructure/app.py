@@ -1,26 +1,25 @@
-from aws_cdk import (
-    App,
-    Stack,
-    RemovalPolicy,
-    aws_dynamodb as dynamodb,
-    aws_iam as iam,
-    aws_sns as sns,
-    aws_lambda as _lambda,
-    aws_sqs as sqs,
-    aws_s3 as s3,
-    aws_apigateway as apigateway,
-    Duration,
-    CfnOutput
-)
-from constructs import Construct
-from aws_cdk.aws_apigateway import LambdaIntegration
+
+from aws_cdk import App, CfnOutput, Duration, RemovalPolicy, Stack
+from aws_cdk import aws_apigateway as apigateway
+from aws_cdk import aws_dynamodb as dynamodb
+from aws_cdk import aws_iam as iam
+from aws_cdk import aws_lambda as _lambda
+from aws_cdk import aws_sns as sns
 from aws_cdk.aws_sns_subscriptions import LambdaSubscription
+from constructs import Construct
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+AWS_ACCOUNT_ID  = os.environ["AWS_ACCOUNT_ID"]
 
 class DesafioToroStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # DynamoDB Table
+
         questions_table = dynamodb.Table(
             self, "QuestionsTable",
             table_name="questions",
@@ -31,6 +30,19 @@ class DesafioToroStack(Stack):
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
             removal_policy=RemovalPolicy.DESTROY,
             time_to_live_attribute="ttl"
+        )
+
+        questions_table.add_global_secondary_index(
+            index_name="SessionIndex",
+            partition_key=dynamodb.Attribute(
+                name="session_id",
+                type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="created_at",
+                type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL
         )
 
         sessions_table = dynamodb.Table(
@@ -44,7 +56,7 @@ class DesafioToroStack(Stack):
             removal_policy=RemovalPolicy.DESTROY 
         )
 
-        # SNS Topics
+ 
         process_question_topic = sns.Topic(
             self, "ProcessQuestionTopic",
             topic_name="process-question",
@@ -57,14 +69,12 @@ class DesafioToroStack(Stack):
             display_name="Notify Response Topic"
         )
 
-        # IAM Role for Lambda
         lambda_role = iam.Role(
             self, "LambdaRole",
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
-            description="Role for Lambda functions in Desafio Toro"
+            description="Role for Lambda functions"
         )
 
-        # DynamoDB permissions
         lambda_role.add_to_policy(
             iam.PolicyStatement(
                 effect=iam.Effect.ALLOW,
@@ -76,11 +86,14 @@ class DesafioToroStack(Stack):
                     "dynamodb:Query",
                     "dynamodb:Scan"
                 ],
-                resources=[questions_table.table_arn, sessions_table.table_arn]
+                resources=[
+                    questions_table.table_arn,
+                    f"{questions_table.table_arn}/index/*", 
+                    sessions_table.table_arn
+                ]
             )
         )
 
-        # SNS permissions
         lambda_role.add_to_policy(
             iam.PolicyStatement(
                 effect=iam.Effect.ALLOW,
@@ -92,7 +105,7 @@ class DesafioToroStack(Stack):
             )
         )
 
-        # CloudWatch Logs permissions
+
         lambda_role.add_to_policy(
             iam.PolicyStatement(
                 effect=iam.Effect.ALLOW,
@@ -105,17 +118,43 @@ class DesafioToroStack(Stack):
             )
         )
 
-        # Lambda Functions
+  
+        lambda_role.add_to_policy(
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=[
+                    "execute-api:Invoke",
+                    "execute-api:ManageConnections"
+                ],
+                resources=["arn:aws:execute-api:*:*:*"]
+            )
+        )
+
+        lambda_role.add_to_policy(
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=[
+                    "cloudfront:CreateInvalidation",
+                    "cloudfront:GetInvalidation",
+                    "cloudfront:ListInvalidations"
+                ],
+                resources=["*"]
+            )
+        )
+
+
         process_question_lambda = _lambda.Function(
             self, "ProcessQuestionFunction",
             runtime=_lambda.Runtime.PYTHON_3_11,
             handler="process_question.handler",
-            code=_lambda.Code.from_asset("../lambdas"),
+            code=_lambda.Code.from_asset("lambda_package.zip"),
             role=lambda_role,
             environment={
-                "SESSIONS_TABLE": sessions_table.table_name,
-                "QUESTIONS_TABLE": questions_table.table_name,
-                "NOTIFY_TOPIC": notify_response_topic.topic_arn
+                "DYNAMODB_TABLE_SESSIONS": sessions_table.table_name,
+                "DYNAMODB_TABLE_QUESTIONS": questions_table.table_name,
+                "SNS_TOPIC_NOTIFY_NAME": notify_response_topic.topic_arn,
+                "OPENAI_API_KEY": OPENAI_API_KEY,
+                "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID
             },
             timeout=Duration.seconds(30),
             memory_size=256,
@@ -126,11 +165,14 @@ class DesafioToroStack(Stack):
             self, "NotifyUserFunction",
             runtime=_lambda.Runtime.PYTHON_3_11,
             handler="notify_user.handler",
-            code=_lambda.Code.from_asset("../lambdas"),
+            code=_lambda.Code.from_asset("lambda_package.zip"),
             role=lambda_role,
             environment={
-                "SESSIONS_TABLE": sessions_table.table_name,
-                "QUESTIONS_TABLE": questions_table.table_name
+                "DYNAMODB_TABLE_SESSIONS": sessions_table.table_name,
+                "DYNAMODB_TABLE_QUESTIONS": questions_table.table_name,
+                "SNS_TOPIC_NOTIFY_NAME": notify_response_topic.topic_name,
+                "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
+                "OPENAI_API_KEY": OPENAI_API_KEY
             },
             timeout=Duration.seconds(30),
             memory_size=256,
@@ -146,14 +188,15 @@ class DesafioToroStack(Stack):
             timeout=Duration.seconds(30),
             memory_size=512,
             environment={
-                "SESSIONS_TABLE": sessions_table.table_name,
-                "QUESTIONS_TABLE": questions_table.table_name,
-                "AWS_ACCOUNT_ID": "977099002762",
-                "OPENAI_API_KEY": "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",
+                "DYNAMODB_TABLE_SESSIONS": sessions_table.table_name,
+                "DYNAMODB_TABLE_QUESTIONS": questions_table.table_name,                
+                "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
+                "OPENAI_API_KEY": OPENAI_API_KEY,
+                "SNS_TOPIC_NOTIFY_NAME": notify_response_topic.topic_name,  
+                "SNS_TOPIC_PROCESS_QUESTION_NAME": process_question_topic.topic_name
             }
         )
 
-        # API Gateway
         api = apigateway.LambdaRestApi(
             self, "FastApiEndpoint",
             handler=fastapi_lambda,
@@ -173,7 +216,6 @@ class DesafioToroStack(Stack):
             LambdaSubscription(notify_user_lambda)
         )
 
-        # Outputs
         CfnOutput(
             self, "ApiEndpoint",
             value=api.url,

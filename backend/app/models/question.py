@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field, UUID4
+
+from pydantic import BaseModel, Field
+
 
 class QuestionBase(BaseModel):
     question: str = Field(..., min_length=1, max_length=500)
@@ -11,9 +12,9 @@ class QuestionCreate(QuestionBase):
 
 
 class QuestionResponse(QuestionBase):
-    id: UUID4
-    user_id: UUID4
-    answer: Optional[str] = None
+    id: str
+    session_id: str
+    answer: str | None = None
     status: str = Field(..., pattern="^(pendente|respondida|erro)$")
     created_at: datetime
     updated_at: datetime
