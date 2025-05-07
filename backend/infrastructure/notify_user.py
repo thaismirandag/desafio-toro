@@ -3,7 +3,7 @@ import boto3
 from botocore.exceptions import ClientError
 from app.core.config import settings
 
-def lambda_notify_user(event, context):
+def handler(event, context):
     """
     Lambda que notifica o usuário quando uma resposta está pronta.
     - Recebe a notificação do SNS
@@ -11,14 +11,12 @@ def lambda_notify_user(event, context):
     - Envia a notificação (neste caso, apenas log)
     """
     try:
-        print("Recebendo evento do SNS...")
         message = json.loads(event['Records'][0]['Sns']['Message'])
         question_id = message.get('question_id')
 
         if not question_id:
             raise ValueError("question_id ausente na mensagem SNS.")
 
-        print(f"question_id recebido: {question_id}")
 
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(settings.DYNAMODB_TABLE_QUESTIONS)
@@ -39,11 +37,6 @@ def lambda_notify_user(event, context):
                 ExpressionAttributeValues={':status': 'respondida'}
             )
 
-        print("Nova resposta disponível:")
-        print(f"ID: {question_id}")
-        print(f"Pergunta: {item.get('question', '(vazio)')}")
-        print(f"Resposta: {item.get('answer', '(vazio)')}")
-        print(f"Status: {item.get('status')}")
 
         return {
             'statusCode': 200,
@@ -57,5 +50,4 @@ def lambda_notify_user(event, context):
         print(f"Erro ao acessar o DynamoDB: {e.response['Error']['Message']}")
         raise
     except Exception as e:
-        print(f"Erro ao enviar notificação: {e!s}")
         raise

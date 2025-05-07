@@ -1,7 +1,6 @@
 from functools import lru_cache
-
-from pydantic import AnyHttpUrl
-from pydantic_settings import BaseSettings
+from typing import List
+from pydantic import AnyHttpUrl, BaseSettings
 
 
 class Settings(BaseSettings):
@@ -10,7 +9,7 @@ class Settings(BaseSettings):
     VERSION: str = "0.1.0"
     API_V1_STR: str = "/api/v1"
     DESCRIPTION: str = ""
-    ALLOWED_ORIGINS: list[AnyHttpUrl] = ["http://localhost:3000"]
+    ALLOWED_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
 
     # AWS
     AWS_ACCESS_KEY_ID: str
@@ -30,9 +29,8 @@ class Settings(BaseSettings):
     BACKEND_HOST: str = "0.0.0.0"
     BACKEND_PORT: str = "8000"
 
-  
     class Config:
-        env_file = ".env"  
+        env_file = ".env"
 
     @property
     def sns_topic_process(self) -> str:

@@ -9,20 +9,20 @@ sns_client = boto3.client('sns')
 
 openai.api_key = settings.OPENAI_API_KEY
 
-def lambda_process_question(event, context):
+def handler(event, context):
     """
     Lambda que processa uma pergunta:
-    - Recebe mensagem do SQS
+    - Recebe mensagem do SNS
     - Busca pergunta no DynamoDB
     - Gera resposta via OpenAI
     - Atualiza item com a resposta
     - Publica notificação no SNS
     """
     try:
-        print("Evento recebido:")
-        print(json.dumps(event))
-
-        message = json.loads(event['Records'][0]['body'])
+ 
+    
+        sns_message = event['Records'][0]['Sns']['Message']
+        message = json.loads(sns_message)
         question_id = message.get('question_id')
 
         if not question_id:
@@ -51,14 +51,13 @@ def lambda_process_question(event, context):
             messages=[
                 {
                     "role": "system",
-                    "content": "Você é um assistente prestativo e amigável."
+                    "content": "Você é um assistente prestativo e amigável. Responda de forma simples e direta."
                 },
                 {"role": "user", "content": question_text}
             ]
         )
 
         answer = ai_response.choices[0].message['content'].strip()
-        print(f"Resposta gerada: {answer}")
 
         table.update_item(
             Key={'id': question_id},
@@ -70,7 +69,9 @@ def lambda_process_question(event, context):
             }
         )
 
-        sns_topic_arn = settings.sns_topic_notify
+    
+        sns_topic_arn = settings.SNS_TOPIC_NOTIFY_NAME
+        
         sns_client.publish(
             TopicArn=sns_topic_arn,
             Message=json.dumps({'question_id': question_id})
@@ -88,5 +89,4 @@ def lambda_process_question(event, context):
         print(f"Erro na AWS: {e.response['Error']['Message']}")
         raise
     except Exception as e:
-        print(f"Erro geral: {e!s}")
         raise
