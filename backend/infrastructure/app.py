@@ -7,7 +7,13 @@ from aws_cdk import aws_lambda as _lambda
 from aws_cdk import aws_sns as sns
 from aws_cdk.aws_sns_subscriptions import LambdaSubscription
 from constructs import Construct
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+AWS_ACCOUNT_ID  = os.environ["AWS_ACCOUNT_ID"]
 
 class DesafioToroStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
@@ -149,8 +155,8 @@ class DesafioToroStack(Stack):
                 "DYNAMODB_TABLE_SESSIONS": sessions_table.table_name,
                 "DYNAMODB_TABLE_QUESTIONS": questions_table.table_name,
                 "SNS_TOPIC_NOTIFY_NAME": notify_response_topic.topic_arn,
-                "AWS_ACCOUNT_ID": "977099002762",
-                "OPENAI_API_KEY": "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",
+                "OPENAI_API_KEY": OPENAI_API_KEY,
+                "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID
             },
             timeout=Duration.seconds(30),
             memory_size=256,
@@ -167,8 +173,8 @@ class DesafioToroStack(Stack):
                 "DYNAMODB_TABLE_SESSIONS": sessions_table.table_name,
                 "DYNAMODB_TABLE_QUESTIONS": questions_table.table_name,
                 "SNS_TOPIC_NOTIFY_NAME": notify_response_topic.topic_name,
-                "AWS_ACCOUNT_ID": "977099002762",
-                "OPENAI_API_KEY": "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",
+                "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
+                "OPENAI_API_KEY": OPENAI_API_KEY
             },
             timeout=Duration.seconds(30),
             memory_size=256,
@@ -186,8 +192,8 @@ class DesafioToroStack(Stack):
             environment={
                 "DYNAMODB_TABLE_SESSIONS": sessions_table.table_name,
                 "DYNAMODB_TABLE_QUESTIONS": questions_table.table_name,                
-                "AWS_ACCOUNT_ID": "977099002762",
-                "OPENAI_API_KEY": "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",
+                "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
+                "OPENAI_API_KEY": OPENAI_API_KEY,
                 "SNS_TOPIC_NOTIFY_NAME": notify_response_topic.topic_name,  
                 "SNS_TOPIC_PROCESS_QUESTION_NAME": process_question_topic.topic_name
             }
