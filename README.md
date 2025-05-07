@@ -6,8 +6,10 @@ Projeto fullstack com backend em FastAPI e frontend em javascript.
 
 ```
 .
-├── architecture.png # Diagrama de arquitetura
-├── backend/           # API FastAPI
+├── architecture  
+│   ├── architecture.puml  #Diagrama de arquitetura
+│   └── sequence.puml     #Diagrama de sequência
+├── backend/          # API FastAPI
 │   ├── app/          # Código fonte
 │   └── tests/        # Testes
 │   └── infrastructure/ # Infraestrutura

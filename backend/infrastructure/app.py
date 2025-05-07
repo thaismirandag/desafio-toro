@@ -69,14 +69,12 @@ class DesafioToroStack(Stack):
             display_name="Notify Response Topic"
         )
 
-        # IAM Role for Lambda
         lambda_role = iam.Role(
             self, "LambdaRole",
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
             description="Role for Lambda functions"
         )
 
-        # DynamoDB permissions
         lambda_role.add_to_policy(
             iam.PolicyStatement(
                 effect=iam.Effect.ALLOW,
@@ -218,7 +216,6 @@ class DesafioToroStack(Stack):
             LambdaSubscription(notify_user_lambda)
         )
 
-        # Outputs
         CfnOutput(
             self, "ApiEndpoint",
             value=api.url,

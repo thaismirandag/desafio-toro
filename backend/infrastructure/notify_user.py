@@ -49,5 +49,5 @@ def handler(event, context):
     except ClientError as e:
         print(f"Erro ao acessar o DynamoDB: {e.response['Error']['Message']}")
         raise
-    except Exception as e:
+    except Exception:
         raise
