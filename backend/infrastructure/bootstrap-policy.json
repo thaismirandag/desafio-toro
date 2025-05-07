@@ -4,6 +4,13 @@
       {
         "Effect": "Allow",
         "Action": [
+          "dynamodb:*"
+        ],
+        "Resource": "arn:aws:dynamodb:*:977099002762:table/cdk-*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
           "ssm:GetParameter",
           "ssm:PutParameter",
           "ssm:DeleteParameter",

@@ -1,5 +1,5 @@
 {
-  "version": "41.0.0",
+  "version": "34.0.0",
   "artifacts": {
     "DesafioToroStack.assets": {
       "type": "cdk:asset-manifest",
@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a36d015a3c03d641a9fba7c8a5175e51e20a2116c9d5b6fd478563ef427084b5.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/ee1febbfb656e51ab685125a583933f5b60b085385254e303580fe73373161b5.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -46,6 +46,20 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "QuestionsTable14A8B4AD"
+          }
+        ],
+        "/DesafioToroStack/SessionsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "SessionsTable7C302024"
+            }
+          }
+        ],
+        "/DesafioToroStack/SessionsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SessionsTable7C302024"
           }
         ],
         "/DesafioToroStack/ProcessQuestionTopic/Resource": [
@@ -108,76 +122,100 @@
             "data": "NotifyUserFunctionNotifyResponseTopicF885599A"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Resource": [
+        "/DesafioToroStack/FastApi/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiE32CC593"
+            "data": "FastApi0EFDFC51"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/CloudWatchRole/Resource": [
+        "/DesafioToroStack/FastApiEndpoint/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiCloudWatchRole99A19228"
+            "data": "FastApiEndpointF31771C0"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Account": [
+        "/DesafioToroStack/FastApiEndpoint/CloudWatchRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiAccount42947F2A"
+            "data": "FastApiEndpointCloudWatchRole62936CB4"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Deployment/Resource": [
+        "/DesafioToroStack/FastApiEndpoint/Account": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiDeployment52040525bbec043a0c2d3f9f688ede66792aedb6"
+            "data": "FastApiEndpointAccount377DB744"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/DeploymentStage.prod/Resource": [
+        "/DesafioToroStack/FastApiEndpoint/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiDeploymentStageprodB2C0431E"
+            "data": "FastApiEndpointDeployment07DAAD1Ac81497d12c91b2614f174875a721c112"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Endpoint": [
+        "/DesafioToroStack/FastApiEndpoint/DeploymentStage.prod/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiEndpointF67BFE61"
+            "data": "FastApiEndpointDeploymentStageprod16C27974"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Default/OPTIONS/Resource": [
+        "/DesafioToroStack/FastApiEndpoint/Endpoint": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiOPTIONSA1D2B516"
+            "data": "FastApiEndpointFF1042E5"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Default/questions/Resource": [
+        "/DesafioToroStack/FastApiEndpoint/Default/OPTIONS/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiquestionsDE1122F6"
+            "data": "FastApiEndpointOPTIONSC31CBE9C"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Default/questions/OPTIONS/Resource": [
+        "/DesafioToroStack/FastApiEndpoint/Default/{proxy+}/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiquestionsOPTIONSF5BC995B"
+            "data": "FastApiEndpointproxyFBB43CD0"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Default/questions/POST/ApiPermission.DesafioToroStackDesafioToroApiD5E61628.POST..questions": [
+        "/DesafioToroStack/FastApiEndpoint/Default/{proxy+}/OPTIONS/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiquestionsPOSTApiPermissionDesafioToroStackDesafioToroApiD5E61628POSTquestionsA0580C28"
+            "data": "FastApiEndpointproxyOPTIONS77C9CA99"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Default/questions/POST/ApiPermission.Test.DesafioToroStackDesafioToroApiD5E61628.POST..questions": [
+        "/DesafioToroStack/FastApiEndpoint/Default/{proxy+}/ANY/ApiPermission.DesafioToroStackFastApiEndpoint7339EB22.ANY..{proxy+}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiquestionsPOSTApiPermissionTestDesafioToroStackDesafioToroApiD5E61628POSTquestions0EAC0561"
+            "data": "FastApiEndpointproxyANYApiPermissionDesafioToroStackFastApiEndpoint7339EB22ANYproxy445BE611"
           }
         ],
-        "/DesafioToroStack/DesafioToroApi/Default/questions/POST/Resource": [
+        "/DesafioToroStack/FastApiEndpoint/Default/{proxy+}/ANY/ApiPermission.Test.DesafioToroStackFastApiEndpoint7339EB22.ANY..{proxy+}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DesafioToroApiquestionsPOST4D5D90DD"
+            "data": "FastApiEndpointproxyANYApiPermissionTestDesafioToroStackFastApiEndpoint7339EB22ANYproxy9C317049"
+          }
+        ],
+        "/DesafioToroStack/FastApiEndpoint/Default/{proxy+}/ANY/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiEndpointproxyANYF931F376"
+          }
+        ],
+        "/DesafioToroStack/FastApiEndpoint/Default/ANY/ApiPermission.DesafioToroStackFastApiEndpoint7339EB22.ANY..": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiEndpointANYApiPermissionDesafioToroStackFastApiEndpoint7339EB22ANY75B7B7F1"
+          }
+        ],
+        "/DesafioToroStack/FastApiEndpoint/Default/ANY/ApiPermission.Test.DesafioToroStackFastApiEndpoint7339EB22.ANY..": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiEndpointANYApiPermissionTestDesafioToroStackFastApiEndpoint7339EB22ANYA842898D"
+          }
+        ],
+        "/DesafioToroStack/FastApiEndpoint/Default/ANY/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiEndpointANY3ECD1C77"
           }
         ],
         "/DesafioToroStack/ApiEndpoint": [
@@ -225,6 +263,5 @@
         "file": "tree.json"
       }
     }
-  },
-  "minimumCliVersion": "2.1005.0"
+  }
 }

@@ -1,7 +1,7 @@
 import json
-import os
 import boto3
 from botocore.exceptions import ClientError
+from app.core.config import settings
 
 def lambda_notify_user(event, context):
     """
@@ -21,7 +21,7 @@ def lambda_notify_user(event, context):
         print(f"question_id recebido: {question_id}")
 
         dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
+        table = dynamodb.Table(settings.DYNAMODB_TABLE_QUESTIONS)
         
         response = table.get_item(Key={'id': question_id})
         if 'Item' not in response:
@@ -57,5 +57,5 @@ def lambda_notify_user(event, context):
         print(f"Erro ao acessar o DynamoDB: {e.response['Error']['Message']}")
         raise
     except Exception as e:
-        print(f"Erro ao enviar notificação: {str(e)}")
+        print(f"Erro ao enviar notificação: {e!s}")
         raise

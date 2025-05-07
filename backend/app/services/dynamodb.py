@@ -1,46 +1,52 @@
-import boto3
 from datetime import datetime
-from typing import Optional
+
+import boto3
+
 from app.core.config import settings
-from app.models.question import QuestionInDB, QuestionStatus
+from app.models.question import QuestionResponse
+
 
 class DynamoDBService:
     def __init__(self):
         self.dynamodb = boto3.resource('dynamodb', region_name=settings.AWS_REGION)
-        self.table = self.dynamodb.Table(settings.DYNAMODB_TABLE)
+        self.table = self.dynamodb.Table(settings.DYNAMODB_TABLE_QUESTIONS)
 
-    def create_question(self, question: str) -> QuestionInDB:
+    def create_question(self, question: str, session_id: str) -> QuestionResponse:
         question_id = datetime.utcnow().isoformat()
         item = {
+            'session_id': session_id,
             'id': question_id,
             'question': question,
-            'status': QuestionStatus.PENDING,
+            'status': 'pendente',
             'created_at': datetime.utcnow().isoformat(),
+            'updated_at': datetime.utcnow().isoformat()
         }
         
         self.table.put_item(Item=item)
-        return QuestionInDB(**item)
+        return QuestionResponse(**item)
 
-    def get_question(self, question_id: str) -> Optional[QuestionInDB]:
+    def get_question(self, question_id: str) -> QuestionResponse | None:
         response = self.table.get_item(Key={'id': question_id})
         item = response.get('Item')
-        return QuestionInDB(**item) if item else None
+        return QuestionResponse(**item) if item else None
 
-    def update_question_with_answer(self, question_id: str, answer: str) -> QuestionInDB:
+    def update_question_with_answer(
+        self,
+        question_id: str,
+        answer: str
+    ) -> QuestionResponse:
         now = datetime.utcnow().isoformat()
-        item = {
-            'id': question_id,
-            'answer': answer,
-            'status': QuestionStatus.ANSWERED,
-            'answered_at': now
-        }
         
         self.table.update_item(
             Key={'id': question_id},
-            UpdateExpression='SET answer = :a, status = :s, answered_at = :t',
+            UpdateExpression=(
+                'SET answer = :a, '
+                'status = :s, '
+                'updated_at = :t'
+            ),
             ExpressionAttributeValues={
                 ':a': answer,
-                ':s': QuestionStatus.ANSWERED,
+                ':s': 'respondida',
                 ':t': now
             },
             ReturnValues='ALL_NEW'

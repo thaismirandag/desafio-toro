@@ -1,20 +1,14 @@
-from aws_cdk import (
-    App,
-    Stack,
-    RemovalPolicy,
-    aws_dynamodb as dynamodb,
-    aws_iam as iam,
-    aws_sns as sns,
-    aws_lambda as _lambda,
-    aws_sqs as sqs,
-    aws_s3 as s3,
-    aws_apigateway as apigateway,
-    Duration,
-    CfnOutput
-)
-from constructs import Construct
-from aws_cdk.aws_apigateway import LambdaIntegration
+import os
+
+from aws_cdk import App, CfnOutput, Duration, RemovalPolicy, Stack
+from aws_cdk import aws_apigateway as apigateway
+from aws_cdk import aws_dynamodb as dynamodb
+from aws_cdk import aws_iam as iam
+from aws_cdk import aws_lambda as _lambda
+from aws_cdk import aws_sns as sns
 from aws_cdk.aws_sns_subscriptions import LambdaSubscription
+from constructs import Construct
+
 
 class DesafioToroStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
@@ -105,12 +99,36 @@ class DesafioToroStack(Stack):
             )
         )
 
-        # Lambda Functions
+  
+        lambda_role.add_to_policy(
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=[
+                    "execute-api:Invoke",
+                    "execute-api:ManageConnections"
+                ],
+                resources=["arn:aws:execute-api:*:*:*"]
+            )
+        )
+
+        lambda_role.add_to_policy(
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=[
+                    "cloudfront:CreateInvalidation",
+                    "cloudfront:GetInvalidation",
+                    "cloudfront:ListInvalidations"
+                ],
+                resources=["*"]
+            )
+        )
+
+
         process_question_lambda = _lambda.Function(
             self, "ProcessQuestionFunction",
             runtime=_lambda.Runtime.PYTHON_3_11,
             handler="process_question.handler",
-            code=_lambda.Code.from_asset("../lambdas"),
+            code=_lambda.Code.from_asset("lambda_package.zip"),
             role=lambda_role,
             environment={
                 "SESSIONS_TABLE": sessions_table.table_name,
@@ -126,11 +144,12 @@ class DesafioToroStack(Stack):
             self, "NotifyUserFunction",
             runtime=_lambda.Runtime.PYTHON_3_11,
             handler="notify_user.handler",
-            code=_lambda.Code.from_asset("../lambdas"),
+            code=_lambda.Code.from_asset("lambda_package.zip"),
             role=lambda_role,
             environment={
                 "SESSIONS_TABLE": sessions_table.table_name,
                 "QUESTIONS_TABLE": questions_table.table_name
+                
             },
             timeout=Duration.seconds(30),
             memory_size=256,
@@ -147,9 +166,10 @@ class DesafioToroStack(Stack):
             memory_size=512,
             environment={
                 "SESSIONS_TABLE": sessions_table.table_name,
-                "QUESTIONS_TABLE": questions_table.table_name,
+                "QUESTIONS_TABLE": questions_table.table_name,                
                 "AWS_ACCOUNT_ID": "977099002762",
                 "OPENAI_API_KEY": "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",
+
             }
         )
 

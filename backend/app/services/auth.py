@@ -1,36 +1,42 @@
 import uuid
-from datetime import datetime, timedelta
-from typing import Optional
-import boto3
-import os
 
-dynamodb = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION"))
-SESSIONS_TABLE_NAME = os.getenv("SESSIONS_TABLE", "sessions")
-table = dynamodb.Table(SESSIONS_TABLE_NAME)
+import boto3
+
+from app.core.config import settings
+
 
 class AuthService:
-    async def login(self, name: str) -> Optional[str]:
-        session_id = str(uuid.uuid4())
-        expires_at = (datetime.utcnow() + timedelta(hours=24)).isoformat()
+    def __init__(self):
+        self.dynamodb = boto3.resource(
+            'dynamodb',
+            region_name=settings.AWS_REGION
+        )
+        self.table = self.dynamodb.Table(settings.DYNAMODB_TABLE_SESSIONS)
 
-        table.put_item(Item={
+
+    async def login(self, name: str) -> str | None:
+        session_id = str(uuid.uuid4())
+        print(f"Criando nova sessão para usuário {name} com ID {session_id}")
+
+        self.table.put_item(Item={
             "session_id": session_id,
-            "name": name,
-            "expires_at": expires_at
+            "name": name
         })
+        print("Sessão criada com sucesso")
 
         return session_id
 
-    async def get_user_by_session(self, session_id: str) -> Optional[str]:
-        response = table.get_item(Key={"session_id": session_id})
+    async def get_user_by_session(self, session_id: str) -> dict | None:
+        print(f"Buscando usuário para sessão {session_id}")
+        response = self.table.get_item(Key={"session_id": session_id})
+        print(f"Resposta do DynamoDB: {response}")
+        
         item = response.get("Item")
+        print(f"Item encontrado: {item}")
 
         if not item:
+            print("Nenhum item encontrado para esta sessão")
             return None
 
-        expires_at = datetime.fromisoformat(item["expires_at"])
-        if expires_at < datetime.utcnow():
-            table.delete_item(Key={"session_id": session_id})
-            return None
-
-        return item["name"]
+        print(f"Usuário encontrado: {item['name']}")
+        return item  

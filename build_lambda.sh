@@ -7,6 +7,8 @@ pip install -r backend/infrastructure/lambda_package/requirements.txt -t backend
 
 cp -r backend/app backend/infrastructure/lambda_package/build/
 cp backend/infrastructure/lambda_handler.py backend/infrastructure/lambda_package/build/
+cp backend/infrastructure/process_question.py backend/infrastructure/lambda_package/build/
+cp backend/infrastructure/notify_user.py backend/infrastructure/lambda_package/build/
 
 cd backend/infrastructure/lambda_package/build
 

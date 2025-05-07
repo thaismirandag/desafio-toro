@@ -1,6 +1,6 @@
 fastapi
 mangum
-openai
+openai==0.28.0
 boto3
 pydantic
 python-dotenv
@@ -9,3 +9,4 @@ python-multipart
 httpx
 email-validator
 pydantic-settings
+botocore

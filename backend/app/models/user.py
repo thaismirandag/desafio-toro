@@ -1,5 +1,5 @@
-from datetime import datetime
-from pydantic import BaseModel, Field, EmailStr, UUID4
+from pydantic import BaseModel
+
 
 class UserCreate(BaseModel):
     name: str
